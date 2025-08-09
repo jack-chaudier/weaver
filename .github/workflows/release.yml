@@ -20,11 +20,19 @@ jobs:
           xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO -archivePath build/weaver.xcarchive archive | tee build.log | cat
           mkdir -p artifacts
+          # Zip artifact (optional alongside DMG)
           ditto -c -k --keepParent build/weaver.xcarchive/Products/Applications/weaver.app artifacts/weaver.zip || true
+          # Create DMG with Applications symlink
+          rm -rf dist && mkdir -p dist/Weaver
+          cp -R "build/weaver.xcarchive/Products/Applications/weaver.app" dist/Weaver/
+          ln -s /Applications dist/Weaver/Applications || true
+          hdiutil create -volname "Weaver" -srcfolder dist/Weaver -ov -format UDZO "artifacts/weaver-${{ github.ref_name }}.dmg"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/weaver.zip
+          files: |
+            artifacts/weaver.zip
+            artifacts/weaver-${{ github.ref_name }}.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
