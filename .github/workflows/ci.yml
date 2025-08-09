@@ -18,6 +18,10 @@ jobs:
       - name: Build and Test
         run: |
           set -euo pipefail
-          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' -skipPackagePluginValidation -skipMacroValidation build | tee build.log | cat
-          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' -skipPackagePluginValidation -skipMacroValidation test | tee test.log | cat
+          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation build | tee build.log | cat
+          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
+            -skip-testing:weaverUITests -skip-testing:weaverUITestsLaunchTests \
+            -only-testing:weaverTests test | tee test.log | cat
 

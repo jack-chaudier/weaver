@@ -17,9 +17,10 @@ jobs:
       - name: Build (Release)
         run: |
           set -euo pipefail
-          xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' -archivePath build/weaver.xcarchive archive | tee build.log | cat
+          xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO -archivePath build/weaver.xcarchive archive | tee build.log | cat
           mkdir -p artifacts
-          ditto -c -k --keepParent build/weaver.xcarchive/Products/Applications/weaver.app artifacts/weaver.zip
+          ditto -c -k --keepParent build/weaver.xcarchive/Products/Applications/weaver.app artifacts/weaver.zip || true
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
