@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# Xcode
+DerivedData/
+build/
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+**/xcuserdata/**
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# SwiftPM
+.build/
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+.swiftpm/xcode/xcshareddata/IDEWorkspaceChecks.plist
+
+# Others
+.idea/
+*.swp
+*.zip
+artifacts/
+build.log
+test.log
+

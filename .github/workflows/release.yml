@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - name: Build (Release)
+        run: |
+          set -euo pipefail
+          xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' -archivePath build/weaver.xcarchive archive | tee build.log | cat
+          mkdir -p artifacts
+          ditto -c -k --keepParent build/weaver.xcarchive/Products/Applications/weaver.app artifacts/weaver.zip
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/weaver.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
