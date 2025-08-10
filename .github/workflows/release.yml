@@ -42,6 +42,7 @@ jobs:
           SPARKLE_VERSION: '2.7.1'
         run: |
           set -euo pipefail
+          : "${SPARKLE_VERSION:=2.7.1}"
           echo "SPARKLE_VERSION is: $SPARKLE_VERSION"
           URL_TAR="https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.tar.xz"
           echo "Downloading $URL_TAR"
@@ -51,7 +52,7 @@ jobs:
             exit 1
           fi
           tar -xJf Sparkle.tar.xz || { echo "Failed to extract Sparkle.tar.xz" >&2; exit 1; }
-          echo "Extracted contents:" && ls -la "Sparkle-${SPARKLE_VERSION}" || true
+          echo "Extracted roots:" && ls -1d Sparkle-* || true
           echo "$PWD/Sparkle-${SPARKLE_VERSION}/bin" >> "$GITHUB_PATH"
       - name: Sparkle sign DMG and generate appcast
         env:
@@ -59,20 +60,9 @@ jobs:
         run: |
           set -euo pipefail
           # Sign the DMG
-          SPARKLE_VERSION='2.7.1'
-          CANDIDATES=(
-            "Sparkle-${SPARKLE_VERSION}/bin/sign_update"
-            "Sparkle-${SPARKLE_VERSION}/bin/sign_update.app/Contents/MacOS/sign_update"
-            "$(command -v sign_update || true)"
-          )
-          SIGN_TOOL=""
-          for c in "${CANDIDATES[@]}"; do
-            if [ -n "$c" ] && [ -x "$c" ]; then SIGN_TOOL="$c"; break; fi
-          done
-          if [ -z "$SIGN_TOOL" ]; then
-            echo "sign_update not found" >&2
-            exit 1
-          fi
+          SIGN_TOOL="$(find . -maxdepth 4 -type f -name sign_update -perm -111 | head -n1 || true)"
+          if [ -z "$SIGN_TOOL" ]; then SIGN_TOOL="$(command -v sign_update || true)"; fi
+          if [ -z "$SIGN_TOOL" ]; then echo "sign_update not found" >&2; find . -maxdepth 4 -name sign_update || true; exit 1; fi
           echo "Using sign_update at: $SIGN_TOOL"
           "$SIGN_TOOL" --ed-key "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg
           # Generate minimal appcast
