@@ -2,7 +2,6 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject private var appModel: AppModel
-    @StateObject private var updater = InAppUpdater()
     @StateObject private var sparkle = SparkleUpdater()
 
     var body: some View {
@@ -27,17 +26,7 @@ struct RootView: View {
             ThemePicker()
             Button { sparkle.checkForUpdates() } label: { Label("Check for Updates", systemImage: "arrow.down.circle") }
         }
-        .environmentObject(updater)
         .environmentObject(sparkle)
-        .onAppear { updater.checkAtLaunchOnce() }
-        .alert(isPresented: $updater.isShowingUpdateAlert) {
-            Alert(
-                title: Text("Update Available \(updater.availableVersionTag ?? "")"),
-                message: Text("A new version is available. Open the download page?"),
-                primaryButton: .default(Text("Open")) { updater.openDownload() },
-                secondaryButton: .cancel()
-            )
-        }
     }
 }
 

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@available(*, deprecated, message: "Replaced by SparkleUpdater")
 @MainActor
 final class InAppUpdater: ObservableObject {
     struct ReleaseAsset: Decodable {
