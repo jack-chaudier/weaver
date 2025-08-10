@@ -67,7 +67,13 @@ jobs:
           if [ -z "$SIGN_TOOL" ]; then SIGN_TOOL="$(command -v sign_update || true)"; fi
           if [ -z "$SIGN_TOOL" ]; then echo "sign_update not found" >&2; find . -maxdepth 4 -name sign_update || true; exit 1; fi
           echo "Using sign_update at: $SIGN_TOOL"
-          SIG="$($SIGN_TOOL -s "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg)"
+          if [ ! -f "artifacts/weaver-${{ github.ref_name }}.dmg" ]; then echo "DMG not found" >&2; ls -la artifacts || true; exit 1; fi
+          # Write private key to a file for secure usage
+          KEY_FILE="sparkle_private_key.pem"
+          printf "%s" "$SPARKLE_PRIVATE_KEY" > "$KEY_FILE"
+          chmod 600 "$KEY_FILE"
+          # Generate signature using key file (avoids deprecated -s)
+          SIG="$($SIGN_TOOL --ed-key-file "$KEY_FILE" artifacts/weaver-${{ github.ref_name }}.dmg)"
           if [ -z "$SIG" ]; then echo "sign_update produced empty signature" >&2; exit 1; fi
           echo "Signature: $SIG"
           # Generate minimal appcast
