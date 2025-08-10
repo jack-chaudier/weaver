@@ -51,6 +51,7 @@ jobs:
             exit 1
           fi
           tar -xJf Sparkle.tar.xz || { echo "Failed to extract Sparkle.tar.xz" >&2; exit 1; }
+          echo "Extracted contents:" && ls -la "Sparkle-${SPARKLE_VERSION}" || true
           echo "$PWD/Sparkle-${SPARKLE_VERSION}/bin" >> "$GITHUB_PATH"
       - name: Sparkle sign DMG and generate appcast
         env:
@@ -58,7 +59,22 @@ jobs:
         run: |
           set -euo pipefail
           # Sign the DMG
-          sign_update --ed-key "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg
+          SPARKLE_VERSION='2.7.1'
+          CANDIDATES=(
+            "Sparkle-${SPARKLE_VERSION}/bin/sign_update"
+            "Sparkle-${SPARKLE_VERSION}/bin/sign_update.app/Contents/MacOS/sign_update"
+            "$(command -v sign_update || true)"
+          )
+          SIGN_TOOL=""
+          for c in "${CANDIDATES[@]}"; do
+            if [ -n "$c" ] && [ -x "$c" ]; then SIGN_TOOL="$c"; break; fi
+          done
+          if [ -z "$SIGN_TOOL" ]; then
+            echo "sign_update not found" >&2
+            exit 1
+          fi
+          echo "Using sign_update at: $SIGN_TOOL"
+          "$SIGN_TOOL" --ed-key "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg
           # Generate minimal appcast
           VERSION=${GITHUB_REF_NAME#v}
           cat > artifacts/appcast.xml <<EOF
