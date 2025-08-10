@@ -4,16 +4,16 @@ import Sparkle
 
 @MainActor
 final class SparkleUpdater: ObservableObject {
-    let updaterController = SPUStandardUpdaterController(
-        startingUpdater: true,
-        updaterDelegate: nil,
-        userDriverDelegate: nil
-    )
+    let updaterController: SPUStandardUpdaterController
 
     private let feedDelegate = SparkleFeedDelegate()
 
     init() {
-        updaterController.updater.delegate = feedDelegate
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: feedDelegate,
+            userDriverDelegate: nil
+        )
     }
 
     func checkForUpdates() {
