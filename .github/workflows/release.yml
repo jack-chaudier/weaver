@@ -34,13 +34,19 @@ jobs:
           cp -R "build/weaver.xcarchive/Products/Applications/weaver.app" dist/Weaver/
           ln -s /Applications dist/Weaver/Applications || true
           hdiutil create -volname "Weaver" -srcfolder dist/Weaver -ov -format UDZO "artifacts/weaver-${{ github.ref_name }}.dmg"
+      - name: Download Sparkle sign_update tool
+        env:
+          SPARKLE_VERSION: '2.7.1'
+        run: |
+          set -euo pipefail
+          curl -L "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.zip" -o Sparkle.zip
+          unzip -q Sparkle.zip
+          echo "$PWD/Sparkle-${SPARKLE_VERSION}/bin" >> "$GITHUB_PATH"
       - name: Sparkle sign DMG and generate appcast
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
         run: |
           set -euo pipefail
-          # Install Sparkle tools
-          brew install sparkle
           # Sign the DMG
           sign_update --ed-key "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg
           # Generate minimal appcast
