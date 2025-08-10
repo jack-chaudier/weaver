@@ -24,7 +24,7 @@ struct EditorView: View {
                 .font(.system(size: 16, weight: .regular, design: .monospaced))
                 .scrollContentBackground(.hidden)
                 .background(appModel.theme.background)
-                .foregroundStyle(appModel.theme.text)
+                .foregroundColor(appModel.theme.text)
                 .padding()
                 .onChange(of: text) { _, newValue in
                     appModel.updateDocumentContent(documentId, projectId: projectId, content: newValue)

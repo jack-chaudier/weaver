@@ -27,9 +27,12 @@ final class AppModel: ObservableObject {
 
     // MARK: - Public API
     func createProject(named name: String) {
-        var project = Project(name: name)
-        projects.append(project)
-        documentsByProjectId[project.id] = [DocumentFile(projectId: project.id, title: "Untitled")]
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let finalName = trimmed.isEmpty ? defaultProjectName() : trimmed
+        let project = Project(name: finalName)
+        projects.insert(project, at: 0)
+        let initialDocTitle = "Chapter 1"
+        documentsByProjectId[project.id] = [DocumentFile(projectId: project.id, title: initialDocTitle)]
         persistProjectList()
         persistDocuments(for: project.id)
         selectedProjectId = project.id
@@ -159,6 +162,16 @@ final class AppModel: ObservableObject {
         }
         // Also delete docs JSON
         try? fileManager.removeItem(at: documentsURL(for: projectId))
+    }
+
+    private func defaultProjectName() -> String {
+        let base = "New Project"
+        if !projects.contains(where: { $0.name == base }) { return base }
+        var idx = 2
+        while projects.contains(where: { $0.name == "\(base) \(idx)" }) {
+            idx += 1
+        }
+        return "\(base) \(idx)"
     }
 }
 

@@ -27,6 +27,7 @@ struct RootView: View {
             Button { sparkle.checkForUpdates() } label: { Label("Check for Updates", systemImage: "arrow.down.circle") }
         }
         .environmentObject(sparkle)
+        .preferredColorScheme(appModel.theme.preferredColorScheme)
     }
 }
 

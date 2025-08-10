@@ -38,6 +38,13 @@ enum EditorTheme: String, CaseIterable, Identifiable, Codable {
         case .solarized: return Color(red: 0.65, green: 0.74, blue: 0.18)
         }
     }
+
+    var preferredColorScheme: ColorScheme {
+        switch self {
+        case .light: return .light
+        case .dark, .solarized: return .dark
+        }
+    }
 }
 
 
