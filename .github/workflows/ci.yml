@@ -15,13 +15,17 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '16.4'
-      - name: Build and Test
+      - name: Build-for-testing
         run: |
           set -euo pipefail
           xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation build | tee build.log | cat
+            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
+            -showBuildTimingSummary build-for-testing | tee build.log | cat
+      - name: Test-without-building (unit tests only)
+        run: |
+          set -euo pipefail
           xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
             -skip-testing:weaverUITests -skip-testing:weaverUITestsLaunchTests \
-            -only-testing:weaverTests test | tee test.log | cat
+            -only-testing:weaverTests test-without-building | tee test.log | cat
 

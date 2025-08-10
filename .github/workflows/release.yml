@@ -22,10 +22,13 @@ jobs:
           # Run tests before releasing (gate the release on tests passing)
           xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
+            -showBuildTimingSummary build-for-testing | tee build.log | cat
+          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
             -skip-testing:weaverUITests -skip-testing:weaverUITestsLaunchTests \
-            -only-testing:weaverTests test | tee test.log | cat
+            -only-testing:weaverTests test-without-building | tee test.log | cat
           xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO -archivePath build/weaver.xcarchive archive | tee build.log | cat
+            CODE_SIGNING_ALLOWED=NO -archivePath build/weaver.xcarchive archive | tee build2.log | cat
           mkdir -p artifacts
           # Zip artifact (optional alongside DMG)
           ditto -c -k --keepParent build/weaver.xcarchive/Products/Applications/weaver.app artifacts/weaver.zip || true
