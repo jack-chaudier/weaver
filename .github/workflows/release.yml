@@ -19,6 +19,11 @@ jobs:
       - name: Build (Release)
         run: |
           set -euo pipefail
+          # Run tests before releasing (gate the release on tests passing)
+          xcodebuild -project weaver.xcodeproj -scheme weaver -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO -skipPackagePluginValidation -skipMacroValidation \
+            -skip-testing:weaverUITests -skip-testing:weaverUITestsLaunchTests \
+            -only-testing:weaverTests test | tee test.log | cat
           xcodebuild -project weaver.xcodeproj -scheme weaver -configuration Release -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO -archivePath build/weaver.xcarchive archive | tee build.log | cat
           mkdir -p artifacts
