@@ -67,7 +67,9 @@ jobs:
           if [ -z "$SIGN_TOOL" ]; then SIGN_TOOL="$(command -v sign_update || true)"; fi
           if [ -z "$SIGN_TOOL" ]; then echo "sign_update not found" >&2; find . -maxdepth 4 -name sign_update || true; exit 1; fi
           echo "Using sign_update at: $SIGN_TOOL"
-          "$SIGN_TOOL" --ed-key "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg
+          SIG="$($SIGN_TOOL -s "$SPARKLE_PRIVATE_KEY" artifacts/weaver-${{ github.ref_name }}.dmg)"
+          if [ -z "$SIG" ]; then echo "sign_update produced empty signature" >&2; exit 1; fi
+          echo "Signature: $SIG"
           # Generate minimal appcast
           VERSION=${GITHUB_REF_NAME#v}
           cat > artifacts/appcast.xml <<EOF
@@ -78,7 +80,7 @@ jobs:
               <link>https://github.com/jack-chaudier/weaver/releases/latest</link>
               <item>
                 <title>Version ${VERSION}</title>
-                <enclosure url="https://github.com/jack-chaudier/weaver/releases/download/${{ github.ref_name }}/weaver-${{ github.ref_name }}.dmg" sparkle:edSignature="$(cat artifacts/weaver-${{ github.ref_name }}.dmg.ed25519)">
+                <enclosure url="https://github.com/jack-chaudier/weaver/releases/download/${{ github.ref_name }}/weaver-${{ github.ref_name }}.dmg" sparkle:edSignature="${SIG}">
                 </enclosure>
               </item>
             </channel>
