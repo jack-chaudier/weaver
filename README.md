@@ -65,6 +65,7 @@ The built app will be at `Build/Build/Products/Release/weaver.app`.
 
 - Build and test on push/PR
 - Create release artifacts for macOS builds on tag push `v*`
+- DMG auto-update feed via Sparkle (checks GitHub Releases latest)
 
 See `.github/workflows/`.
 

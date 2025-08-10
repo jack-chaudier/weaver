@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		64A2FFF12E500AAA00000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 64A2FFF32E500AAA00000003 /* Sparkle */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		645131172E48127E0011E325 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64A2FFF12E500AAA00000001 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = weaver;
 			packageProductDependencies = (
+				64A2FFF32E500AAA00000003 /* Sparkle */,
 			);
 			productName = weaver;
 			productReference = 645131082E48127C0011E325 /* weaver.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 645130FF2E48127C0011E325;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				64A2FFF22E500AAA00000002 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 645131092E48127C0011E325 /* Products */;
 			projectDirPath = "";
@@ -397,17 +406,19 @@
 				CODE_SIGN_ENTITLEMENTS = weaver/weaver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = WFZJ6KSYCZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_SUFeedURL = https://github.com/jack-chaudier/weaver/releases/latest/download/appcast.xml;
+				INFOPLIST_KEY_SUPublicEDKey = 49Y7gkuCsIQ2rQwyZzDrO7EsFu8uqQleHhWi145IcD4=;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jack-chaudier.weaver";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -424,17 +435,19 @@
 				CODE_SIGN_ENTITLEMENTS = weaver/weaver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = WFZJ6KSYCZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_SUFeedURL = https://github.com/jack-chaudier/weaver/releases/latest/download/appcast.xml;
+				INFOPLIST_KEY_SUPublicEDKey = 49Y7gkuCsIQ2rQwyZzDrO7EsFu8uqQleHhWi145IcD4=;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jack-chaudier.weaver";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -551,6 +564,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		64A2FFF22E500AAA00000002 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		64A2FFF32E500AAA00000003 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 64A2FFF22E500AAA00000002 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 645131002E48127C0011E325 /* Project object */;
 }
