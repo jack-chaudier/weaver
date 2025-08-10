@@ -39,8 +39,14 @@ jobs:
           SPARKLE_VERSION: '2.7.1'
         run: |
           set -euo pipefail
-          curl -L "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.zip" -o Sparkle.zip
-          unzip -q Sparkle.zip
+          URL="https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.zip"
+          echo "Downloading $URL"
+          curl --fail --retry 3 --retry-delay 2 -L "$URL" -o Sparkle.zip
+          if [ ! -s Sparkle.zip ]; then
+            echo "Sparkle.zip is missing or empty" >&2
+            exit 1
+          fi
+          unzip -q Sparkle.zip || { echo "Failed to unzip Sparkle.zip" >&2; exit 1; }
           echo "$PWD/Sparkle-${SPARKLE_VERSION}/bin" >> "$GITHUB_PATH"
       - name: Sparkle sign DMG and generate appcast
         env:
