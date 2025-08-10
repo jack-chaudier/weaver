@@ -28,6 +28,12 @@ struct RootView: View {
         }
         .environmentObject(sparkle)
         .preferredColorScheme(appModel.theme.preferredColorScheme)
+        .onAppear {
+            // Auto-check shortly after launch
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                sparkle.checkForUpdates()
+            }
+        }
     }
 }
 
