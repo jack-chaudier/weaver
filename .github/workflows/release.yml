@@ -73,11 +73,13 @@ jobs:
           printf "%s" "$SPARKLE_PRIVATE_KEY" > "$KEY_FILE"
           chmod 600 "$KEY_FILE"
           # Generate signature using key file (avoids deprecated -s)
-          SIG="$($SIGN_TOOL --ed-key-file "$KEY_FILE" artifacts/weaver-${{ github.ref_name }}.dmg)"
+          DMG="artifacts/weaver-${{ github.ref_name }}.dmg"
+          SIG="$($SIGN_TOOL --ed-key-file "$KEY_FILE" "$DMG")"
           if [ -z "$SIG" ]; then echo "sign_update produced empty signature" >&2; exit 1; fi
           echo "Signature: $SIG"
           # Generate minimal appcast
           VERSION=${GITHUB_REF_NAME#v}
+          LENGTH=$(stat -f%z "$DMG" 2>/dev/null || wc -c < "$DMG")
           cat > artifacts/appcast.xml <<EOF
           <?xml version="1.0" encoding="utf-8"?>
           <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -86,7 +88,7 @@ jobs:
               <link>https://github.com/jack-chaudier/weaver/releases/latest</link>
               <item>
                 <title>Version ${VERSION}</title>
-                <enclosure url="https://github.com/jack-chaudier/weaver/releases/download/${{ github.ref_name }}/weaver-${{ github.ref_name }}.dmg" sparkle:edSignature="${SIG}">
+                <enclosure url="https://github.com/jack-chaudier/weaver/releases/download/${{ github.ref_name }}/weaver-${{ github.ref_name }}.dmg" sparkle:edSignature="${SIG}" sparkle:version="${VERSION}" sparkle:shortVersionString="${VERSION}" length="${LENGTH}">
                 </enclosure>
               </item>
             </channel>
